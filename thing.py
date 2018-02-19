@@ -5,7 +5,7 @@ from warcio.archiveiterator import ArchiveIterator
 import zmq
 import ujson
 from bs4 import BeautifulSoup
-import bsthing
+import processor
 import operator
 
 context = zmq.Context()
