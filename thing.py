@@ -48,7 +48,7 @@ def print_records(url):
 
                 node = record.rec_headers.get_header('WARC-Target-URI')
 
-                outlinks = ",",join([link['href'] for link in soup.find_all('a', href=True)])
+                outlinks = ",".join([link['href'] for link in soup.find_all('a', href=True)])
 
                 msg = bytes(ujson.dumps({"Node":node,"Keywords":",".join(top_3_words), "Outlinks":outlinks, "Score":1.0}), "utf-8")
 
@@ -56,9 +56,10 @@ def print_records(url):
     
 
 def start_crawl():
-    with open("warc.paths", "r") as textfile:
+    with open("warc copy.txt", "r") as textfile:
         urls = textfile.readlines()
     for url in urls:
+        url = "https://commoncrawl.s3.amazonaws.com/" + url
         pool.spawn(print_records, url)
     pool.join()
 

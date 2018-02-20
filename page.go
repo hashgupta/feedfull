@@ -17,14 +17,14 @@ import (
 )
 
 var (
-	Voter = gio.RegisterMapper(makevotes)
+	voter = gio.RegisterMapper(makevotes)
 	isDistributed        = flag.Bool("distributed", false, "run in distributed or not")
 )
 
 func main() {
 	gio.Init()
 	flag.Parse()
-	data := make(chan []interface{})
+	data := make(chan interface{})
 	output := make(chan []interface{}, 500)
 	var wg sync.WaitGroup
 
@@ -60,9 +60,9 @@ func main() {
 			if err != nil {
 				fmt.Println("error:", err)
 			}
-			row := []interface{}
+			var row []interface{}
 			
-			row = append(row, message.Node, message.Outlinks, message.Score, messages.Keywords)
+			row = append(row, message.Node, message.Outlinks, message.Score, message.Keywords)
 			
 			fmt.Println(message.Node)
 			
@@ -80,7 +80,7 @@ func main() {
 		go func(input chan []interface{}) {
 			//send chan data to cassandra here
 			for x := range input {
-				fmt.Fprintln(<-input)
+				fmt.Println(x)
 			}
 			defer wg.Done()
 
@@ -89,7 +89,7 @@ func main() {
 
 	start := flow.New("indexing").Channel(data)
 
-	keywords = start.Select("divert_keywords", flow.Field(1,4))
+	keywords := start.Select("divert_keywords", flow.Field(1,4))
 	// word_doc_one := start.Select(1,4).
 	// 	PartitionByKey("partition", 7).
 	// 	Map("read content", registeredReadConent)
@@ -128,13 +128,15 @@ func main() {
 
 	start = start.Join("add", keywords, flow.Field(1))
 
-	start.Output(func(row *util.Row) error {
-			fmt.Printf("%s: %s\n",
+	start.OutputRow(func(row *util.Row) error {
+			fmt.Printf("%s: %f\n",
 				row.K[0],
 				row.V[1].(float32),
 
 			)
-			output <- []interface{row.K[0],row.V[0],row.V[1], row.V[2]}
+			var outputRow []interface{}
+			outputRow = append(outputRow, row.K[0], row.V[0], row.V[1], row.V[2])
+			output <- outputRow
 			return nil
 		})
 	
@@ -151,19 +153,19 @@ func main() {
 
 func makevotes(x []interface{}) error {
 
-	rawurl := gio.ToString(x[1])
+	rawurls := gio.ToString(x[1])
 	score := gio.ToFloat64(x[2])
 	urls := strings.Split(rawurls, ",")
 
 	for url := range urls {
-		gio.Emit(url, score/len(urls))
+		gio.Emit(url, score/float64(len(urls)))
 	}
 	return nil
 }
 
 func graph(start *flow.Dataset) *flow.Dataset{
 	page := start.
-		Map("votes", Voter).
+		Map("votes", voter).
 		ReduceBy("count", reducer.SumFloat64, flow.Field(1))
 
 	initial :=
