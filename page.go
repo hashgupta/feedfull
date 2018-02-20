@@ -60,8 +60,12 @@ func main() {
 			if err != nil {
 				fmt.Println("error:", err)
 			}
-			row = []interface{message.Node, message.Outlinks, message.Score, messages.Keywords}
+			row := []interface{}
+			
+			row = append(row, message.Node, message.Outlinks, message.Score, messages.Keywords)
+			
 			fmt.Println(message.Node)
+			
 			data <- row
 
 
@@ -75,6 +79,9 @@ func main() {
 		
 		go func(input chan []interface{}) {
 			//send chan data to cassandra here
+			for x := range input {
+				fmt.Fprintln(<-input)
+			}
 			defer wg.Done()
 
 		}(output)
