@@ -12,7 +12,7 @@ import operator
 
 context = zmq.Context()
 socket = context.socket(zmq.PUB)
-socket.bind("tcp://*:5555")
+socket.bind("tcp://localhost:5555")
 
 POOL = pool.Pool(10)
 
@@ -60,7 +60,7 @@ def print_records(url):
 def start_crawl():
     with open("warc copy.txt", "r") as textfile:
         urls = textfile.readlines()
-    for url in urls:
+    for url in urls[0]:
         POOL.spawn(print_records, "https://commoncrawl.s3.amazonaws.com/"+url)
     POOL.join()
 
