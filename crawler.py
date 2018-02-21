@@ -70,6 +70,3 @@ with open("warc copy.txt", "r") as textfile:
 for url in urls[1:100]:
     POOL.spawn(print_records, "https://commoncrawl.s3.amazonaws.com/"+url)
 POOL.join()
-
-
-start_crawl()
