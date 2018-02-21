@@ -33,6 +33,7 @@ def print_records(url):
     resp = requests.get(url, stream=True)
     print("Downloaded")
     print(url)
+    print(resp.headers['Content-length'])
     try:
         for record in ArchiveIterator(resp.raw, no_record_parse=True):
             if record.rec_type == 'warcinfo':
