@@ -30,31 +30,34 @@ def word_count(str):
 
 def print_records(url):
     resp = requests.get(url, stream=True)
-    for record in ArchiveIterator(resp.raw, no_record_parse=True):
-        if record.rec_type == 'warcinfo':
-            print(record.raw_stream.read())
+    try:
+        for record in ArchiveIterator(resp.raw, no_record_parse=True):
+            if record.rec_type == 'warcinfo':
+                print(record.raw_stream.read())
 
-        elif record.rec_type == 'response':
-            if record.http_headers.get_header('Content-Type') == 'text/html':
-                soup = BeautifulSoup(record.content_stream().read().decode("utf-8"))
-
-
-                # Process record here, maybe spacy
-
-                text = process(soup)
+            elif record.rec_type == 'response':
+                if record.http_headers.get_header('Content-Type') == 'text/html':
+                    soup = BeautifulSoup(record.content_stream().read().decode("utf-8"))
 
 
-                counts = word_count(text)
+                    # Process record here, maybe spacy
 
-                top_3_words = sorted(counts.items(), key=operator.itemgetter(1), reverse=True)[:2]
+                    text = process(soup)
 
-                node = record.rec_headers.get_header('WARC-Target-URI')
 
-                outlinks = ",".join([link['href'] for link in soup.find_all('a', href=True)])
+                    counts = word_count(text)
 
-                msg = bytes(ujson.dumps({"Node":node,"Keywords":",".join(top_3_words), "Outlinks":outlinks, "Score":1.0}), "utf-8")
+                    top_3_words = sorted(counts.items(), key=operator.itemgetter(1), reverse=True)[:2]
 
-                socket.send(msg)
+                    node = record.rec_headers.get_header('WARC-Target-URI')
+
+                    outlinks = ",".join([link['href'] for link in soup.find_all('a', href=True)])
+
+                    msg = bytes(ujson.dumps({"Node":node,"Keywords":",".join(top_3_words), "Outlinks":outlinks, "Score":1.0}), "utf-8")
+
+                    socket.send(msg)
+    except:
+        pass
     
 
 def start_crawl():
