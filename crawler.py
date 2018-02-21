@@ -30,7 +30,7 @@ def word_count(str):
 
 def print_records(url):
     resp = requests.get(url, stream=True)
-    for record in ArchiveIterator(resp.raw):
+    for record in ArchiveIterator(resp.raw, no_record_parse=True):
         if record.rec_type == 'warcinfo':
             print(record.raw_stream.read())
 
