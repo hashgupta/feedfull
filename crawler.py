@@ -61,12 +61,11 @@ def print_records(url):
         pass
     
 
-def start_crawl():
-    with open("warc copy.txt", "r") as textfile:
-        urls = textfile.readlines()
-    for url in urls[0]:
-        POOL.spawn(print_records, "https://commoncrawl.s3.amazonaws.com/"+url)
-    POOL.join()
+with open("warc copy.txt", "r") as textfile:
+    urls = textfile.readlines()
+for url in urls:
+    POOL.spawn(print_records, "https://commoncrawl.s3.amazonaws.com/"+url)
+POOL.join()
 
 
 start_crawl()
