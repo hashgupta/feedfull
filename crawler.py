@@ -4,6 +4,7 @@ from gevent import monkey
 monkey.patch_all()
 import requests
 from warcio.archiveiterator import ArchiveIterator
+from warcio.recordloader import ArchiveLoadFailed
 import zmq
 import ujson
 from bs4 import BeautifulSoup
@@ -56,7 +57,7 @@ def print_records(url):
                     msg = bytes(ujson.dumps({"Node":node,"Keywords":",".join(top_3_words), "Outlinks":outlinks, "Score":1.0}), "utf-8")
 
                     socket.send(msg)
-    except:
+    except ArchiveLoadFailed:
         pass
     
 
