@@ -1,10 +1,5 @@
 import re
-import urllib.request
 from bs4 import BeautifulSoup
-    
-# html = urllib.request.urlopen('http://bgr.com/2014/10/15/google-android-5-0-lollipop-release/')
-# soup = BeautifulSoup(html)
-# data = soup.findAll(text=True)
     
 def visible(element):
     if element.parent.name in ['style', 'script', '[document]', 'head', 'title']:
@@ -20,14 +15,7 @@ def trim(element):
     
 def inside_trim(element):
     return "".join(element.split()) + " "
-    
-# result = filter(visible, data)
-# result = filter(trim, result)
-# result = map(inside_trim, result)
 
-
-    
-print(list(result))
 
 def process(soup):
     soup = BeautifulSoup(html)
