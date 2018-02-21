@@ -12,7 +12,7 @@ import operator
 
 context = zmq.Context()
 socket = context.socket(zmq.PUB)
-socket.bind("tcp://localhost:5555")
+socket.bind("tcp://*:5555")
 
 POOL = pool.Pool(10)
 

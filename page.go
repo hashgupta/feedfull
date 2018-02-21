@@ -32,7 +32,7 @@ func main() {
 	//  Socket to talk to server
 	subscriber, _ := zmq.NewSocket(zmq.SUB)
 
-	subscriber.Connect("tcp://localhost:5555")
+	subscriber.Connect("tcp://*:5555")
 
 	//  Subscribe to zipcode, default is NYC, 10001
 
