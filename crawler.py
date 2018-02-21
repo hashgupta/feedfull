@@ -67,7 +67,7 @@ def print_records(url):
 
 with open("warc copy.txt", "r") as textfile:
     urls = textfile.readlines()
-for url in urls:
+for url in urls[1:100]:
     POOL.spawn(print_records, "https://commoncrawl.s3.amazonaws.com/"+url)
 POOL.join()
 
