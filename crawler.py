@@ -61,8 +61,8 @@ def start_crawl():
     with open("warc copy.txt", "r") as textfile:
         urls = textfile.readlines()
     for url in urls:
-        pool.spawn(print_records, "https://commoncrawl.s3.amazonaws.com/"+url)
-    pool.join()
+        POOL.spawn(print_records, "https://commoncrawl.s3.amazonaws.com/"+url)
+    POOL.join()
 
 
 start_crawl()
