@@ -56,7 +56,9 @@ def print_records(url):
 
                     msg = bytes(ujson.dumps({"Node":node,"Keywords":",".join(top_3_words), "Outlinks":outlinks, "Score":1.0}), "utf-8")
 
-                    socket.send(msg)
+                    # socket.send(msg)
+                    print(msg.decode("utf-8"))
+    
     except ArchiveLoadFailed:
         pass
     
