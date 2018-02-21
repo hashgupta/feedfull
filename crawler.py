@@ -59,13 +59,8 @@ def start_crawl():
     with open("warc copy.txt", "r") as textfile:
         urls = textfile.readlines()
     for url in urls:
-        url = "https://commoncrawl.s3.amazonaws.com/" + url
-        pool.spawn(print_records, url)
+        pool.spawn(print_records, "https://commoncrawl.s3.amazonaws.com/"+url)
     pool.join()
 
 
-
-
-# WARC
-# print_records(
-#     'https://archive.org/download/ExampleArcAndWarcFiles/IAH-20080430204825-00000-blackbook.warc.gz')
+start_crawl()
