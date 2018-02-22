@@ -18,9 +18,8 @@ def inside_trim(element):
 
 
 def process(soup):
-    soup = BeautifulSoup(html)
     data = soup.findAll(text=True)
     result = filter(visible, data)
     result = filter(trim, result)
     result = map(inside_trim, result)
-    print("".join(result).rstrip())
+    return "".join(result).rstrip()

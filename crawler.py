@@ -17,9 +17,9 @@ socket.bind("tcp://*:5555")
 
 POOL = pool.Pool(10)
 
-def word_count(str):
+def word_count(string):
     counts = dict()
-    words = str.split()
+    words = string.split()
 
     for word in words:
         if word in counts:
@@ -34,9 +34,9 @@ def print_records(url):
     print("Downloaded")
     print(url)
     try:
-        for record in ArchiveIterator(resp.raw, no_record_parse=True):
+        for record in ArchiveIterator(resp.raw, ensure_http_headers=True):
             if record.rec_type == 'warcinfo':
-                print(record.raw_stream.read())
+                pass
 
             elif record.rec_type == 'response':
                 if record.http_headers.get_header('Content-Type') == 'text/html':
@@ -45,12 +45,12 @@ def print_records(url):
 
                     # Process record here, maybe spacy
 
-                    text = process(soup)
+                    text = processor.process(soup)
 
 
                     counts = word_count(text)
 
-                    top_3_words = sorted(counts.items(), key=operator.itemgetter(1), reverse=True)[:2]
+                    top_3_words = [x[0] for x in sorted(counts.items(), key=operator.itemgetter(1), reverse=True)[:2]]
 
                     node = record.rec_headers.get_header('WARC-Target-URI')
 
@@ -58,8 +58,8 @@ def print_records(url):
 
                     msg = bytes(ujson.dumps({"Node":node,"Keywords":",".join(top_3_words), "Outlinks":outlinks, "Score":1.0}), "utf-8")
 
-                    # socket.send(msg)
-                    print(msg.decode("utf-8"))
+                    socket.send(msg)
+                    # print(msg.decode("utf-8"))
     
     except ArchiveLoadFailed:
         pass
@@ -70,3 +70,4 @@ with open("warc copy.txt", "r") as textfile:
 for url in urls[1:100]:
     POOL.spawn(print_records, "https://commoncrawl.s3.amazonaws.com/"+url)
 POOL.join()
+# print_records('https://archive.org/download/ExampleArcAndWarcFiles/IAH-20080430204825-00000-blackbook.warc.gz')

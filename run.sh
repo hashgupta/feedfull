@@ -17,7 +17,7 @@ go get github.com/chrislusf/gleam/flow
 
 go get github.com/chrislusf/gleam/distributed/gleam
 
-pip install bs4, ujson, zmq, warcio, requests, gevent
+pip install bs4 ujson zmq warcio requests gevent
 
 
 (go run page.go; python crawler.py) &
