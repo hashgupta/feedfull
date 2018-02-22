@@ -32,7 +32,7 @@ def print_records(url):
     resp = requests.get(url, stream=True)
     print("Downloaded")
     print(url)
-    print(resp.raw.read(10))
+    print(resp.raw.read(500))
     for record in ArchiveIterator(resp.raw, ensure_http_headers=True):
         if record.rec_type == 'warcinfo':
             pass
