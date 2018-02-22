@@ -4,7 +4,6 @@ from gevent import monkey
 monkey.patch_all()
 import requests
 from warcio.archiveiterator import ArchiveIterator
-from warcio.recordloader import ArchiveLoadFailed
 import zmq
 import ujson
 from bs4 import BeautifulSoup
@@ -15,7 +14,7 @@ context = zmq.Context()
 socket = context.socket(zmq.PUB)
 socket.bind("tcp://*:5555")
 
-POOL = pool.Pool(10)
+POOL = pool.Pool(100)
 
 def word_count(string):
     counts = dict()
@@ -33,36 +32,32 @@ def print_records(url):
     resp = requests.get(url, stream=True)
     print("Downloaded")
     print(url)
-    try:
-        for record in ArchiveIterator(resp.raw, ensure_http_headers=True):
-            if record.rec_type == 'warcinfo':
-                pass
+    for record in ArchiveIterator(resp.raw, ensure_http_headers=True):
+        if record.rec_type == 'warcinfo':
+            pass
 
-            elif record.rec_type == 'response':
-                if record.http_headers.get_header('Content-Type') == 'text/html':
-                    soup = BeautifulSoup(record.content_stream().read().decode("utf-8"))
-
-
-                    # Process record here, maybe spacy
-
-                    text = processor.process(soup)
+        elif record.rec_type == 'response':
+            if record.http_headers.get_header('Content-Type') == 'text/html':
+                soup = BeautifulSoup(record.content_stream().read().decode("utf-8"))
 
 
-                    counts = word_count(text)
+                # Process record here, maybe spacy
 
-                    top_3_words = [x[0] for x in sorted(counts.items(), key=operator.itemgetter(1), reverse=True)[:2]]
+                text = processor.process(soup)
 
-                    node = record.rec_headers.get_header('WARC-Target-URI')
 
-                    outlinks = ",".join([link['href'] for link in soup.find_all('a', href=True)])
+                counts = word_count(text)
 
-                    msg = bytes(ujson.dumps({"Node":node,"Keywords":",".join(top_3_words), "Outlinks":outlinks, "Score":1.0}), "utf-8")
+                top_3_words = [x[0] for x in sorted(counts.items(), key=operator.itemgetter(1), reverse=True)[:2]]
 
-                    socket.send(msg)
-                    # print(msg.decode("utf-8"))
-    
-    except ArchiveLoadFailed:
-        pass
+                node = record.rec_headers.get_header('WARC-Target-URI')
+
+                outlinks = ",".join([link['href'] for link in soup.find_all('a', href=True)])
+
+                msg = bytes(ujson.dumps({"Node":node,"Keywords":",".join(top_3_words), "Outlinks":outlinks, "Score":1.0}), "utf-8")
+
+                socket.send(msg)
+                # print(msg.decode("utf-8"))
     
 
 with open("warc copy.txt", "r") as textfile:
