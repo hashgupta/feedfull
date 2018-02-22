@@ -29,11 +29,11 @@ def word_count(string):
     return counts
 
 def print_records(url):
-    resp = requests.get(url, stream=True)
+    resp = requests.get(url)
     print("Downloaded")
     print(url)
     print(resp.raw.read(500))
-    for record in ArchiveIterator(resp.raw, ensure_http_headers=True):
+    for record in ArchiveIterator(resp.content, ensure_http_headers=True):
         if record.rec_type == 'warcinfo':
             pass
 
