@@ -29,7 +29,7 @@ def word_count(string):
     return counts
 
 def print_records(url):
-    resp = requests.get(url)
+    resp = requests.get(url, stream=True)
     print("Downloaded")
     print(url)
     print(resp.raw.read(500))
