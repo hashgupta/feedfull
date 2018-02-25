@@ -36,6 +36,7 @@ def print_records(url):
             pass
 
         elif record.rec_type == 'response':
+            print(record.rec_headers)
             if not record.http_headers:
                 continue
             if record.http_headers.get_header('Content-Type') == 'text/html':
