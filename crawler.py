@@ -36,8 +36,14 @@ def print_records(url):
             pass
 
         elif record.rec_type == 'response':
+            if not record.http_headers:
+                continue
             if record.http_headers.get_header('Content-Type') == 'text/html':
-                soup = BeautifulSoup(record.content_stream().read().decode("utf-8"))
+                try: 
+                    soup = BeautifulSoup(record.content_stream().read().decode("utf-8"))
+                except Exception as e:
+                    print(e)
+                    continue
 
 
                 # Process record here, maybe spacy
