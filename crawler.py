@@ -14,7 +14,7 @@ context = zmq.Context()
 socket = context.socket(zmq.PUB)
 socket.bind("tcp://*:5555")
 
-POOL = pool.Pool(1)
+POOL = pool.Pool(100)
 
 def word_count(string):
     counts = dict()
