@@ -8,7 +8,7 @@ import (
 	zmq "github.com/pebbe/zmq4"
 	"encoding/json"
 
-	"github.com/chrislusf/gleam/distributed"
+	// "github.com/chrislusf/gleam/distributed"
 	"github.com/chrislusf/gleam/flow"
 	"github.com/chrislusf/gleam/gio"
 	// "github.com/chrislusf/gleam/gio/mapper"
@@ -140,11 +140,7 @@ func main() {
 			return nil
 		})
 	
-	if *isDistributed {
-		start.Run(distributed.Option())
-	} else {
-		start.Run()
-	}
+	start.Run()
 
 	wg.Wait()
 
