@@ -14,7 +14,7 @@ context = zmq.Context()
 socket = context.socket(zmq.PUB)
 socket.bind("tcp://*:5555")
 
-POOL = pool.Pool(100)
+POOL = pool.Pool(1)
 
 def word_count(string):
     counts = dict()
@@ -29,11 +29,9 @@ def word_count(string):
     return counts
 
 def print_records(url):
-    resp = requests.get(url)
-    print("Downloaded")
-    print(url)
-    print(resp.raw.read(500))
-    for record in ArchiveIterator(resp.content, ensure_http_headers=True):
+    url = url.strip()
+    resp = requests.get(url, stream=True)
+    for record in ArchiveIterator(resp.raw):
         if record.rec_type == 'warcinfo':
             pass
 
@@ -63,7 +61,8 @@ def print_records(url):
 
 with open("warc copy.txt", "r") as textfile:
     urls = textfile.readlines()
-for url in urls[1:100]:
-    POOL.spawn(print_records, "https://commoncrawl.s3.amazonaws.com/"+url)
+for url in urls:
+    POOL.spawn(print_records, "https://commoncrawl.s3.amazonaws.com/"+urls[0])
 POOL.join()
+
 # print_records('https://archive.org/download/ExampleArcAndWarcFiles/IAH-20080430204825-00000-blackbook.warc.gz')
