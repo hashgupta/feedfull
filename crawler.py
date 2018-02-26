@@ -12,7 +12,7 @@ import operator
 
 context = zmq.Context()
 socket = context.socket(zmq.PUB)
-socket.bind("tcp://*:5555")
+socket.bind("tcp://0.0.0.0:5555")
 
 POOL = pool.Pool(100)
 
@@ -43,7 +43,7 @@ def print_records(url):
                 try: 
                     soup = BeautifulSoup(record.content_stream().read().decode("utf-8"))
                 except Exception as e:
-                    print(e)
+                    # print(e)
                     continue
 
 
@@ -71,5 +71,6 @@ with open("warc copy.txt", "r") as textfile:
 for url in urls:
     POOL.spawn(print_records, "https://commoncrawl.s3.amazonaws.com/"+urls[0])
 POOL.join()
+socket.send(bytes("done", "utf-8"))
 
 # print_records('https://archive.org/download/ExampleArcAndWarcFiles/IAH-20080430204825-00000-blackbook.warc.gz')
