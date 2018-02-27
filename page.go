@@ -148,6 +148,7 @@ func main() {
 }
 
 func makevotes(x []interface{}) error {
+	fmt.Print(len(x))
 
 	rawurls := gio.ToString(x[1])
 	score := gio.ToFloat64(x[2])
