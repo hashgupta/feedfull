@@ -168,6 +168,7 @@ func makevotes(x []interface{}) error {
 func graph(start *flow.Dataset) *flow.Dataset{
 	page := start.
 		Map("votes", voter).
+		Printlnf("%s - %d").
 		ReduceBy("count", reducer.SumFloat64, flow.Field(1))
 
 	initial :=
