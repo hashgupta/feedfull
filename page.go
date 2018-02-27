@@ -18,6 +18,7 @@ import (
 
 var (
 	voter = gio.RegisterMapper(makevotes)
+	splitter = gio.RegisterMapper(split)
 	isDistributed        = flag.Bool("distributed", false, "run in distributed or not")
 )
 
@@ -89,7 +90,7 @@ func main() {
 
 	start := flow.New("indexing").Channel(data)
 
-	start = start.Printlnf("%s - %s - %d - %s")
+	start = start.
 
 	keywords := start.Select("divert_keywords", flow.Field(1,4))
 	// keywords.Printlnf("%s - %s")
@@ -174,6 +175,10 @@ func graph(start *flow.Dataset) *flow.Dataset{
 
 
 	return initial.Join("byNode", page, flow.Field(1))
+}
+func split(x []interface{}) error {
+	row := x[0]
+	gio.Emit(row...)
 }
 
 // func readContent(x []interface{}) error {
