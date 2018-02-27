@@ -90,7 +90,7 @@ func main() {
 
 	start := flow.New("indexing").Channel(data)
 
-	start = start.
+	start = start.Map("split", splitter)
 
 	keywords := start.Select("divert_keywords", flow.Field(1,4))
 	// keywords.Printlnf("%s - %s")
@@ -177,8 +177,9 @@ func graph(start *flow.Dataset) *flow.Dataset{
 	return initial.Join("byNode", page, flow.Field(1))
 }
 func split(x []interface{}) error {
-	row := x[0]
+	row := x[0].([]interface{})
 	gio.Emit(row...)
+	return nil
 }
 
 // func readContent(x []interface{}) error {
