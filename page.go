@@ -64,7 +64,7 @@ func main() {
 			
 			row = append(row, message.Node, message.Outlinks, message.Score, message.Keywords)
 			
-			fmt.Println(row)
+			fmt.Println(len(row))
 			
 			data <- row
 
