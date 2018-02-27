@@ -60,12 +60,13 @@ func main() {
 			err := json.Unmarshal([]byte(msg), &message)
 			if err != nil {
 				fmt.Println("error:", err)
+				continue
 			}
 			var row []interface{}
 			
 			row = append(row, message.Node, message.Outlinks, message.Score, message.Keywords)
 			
-			fmt.Println(len(row))
+			// fmt.Println(len(row))
 			
 			data <- row
 
