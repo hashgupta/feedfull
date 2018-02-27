@@ -89,8 +89,10 @@ func main() {
 
 	start := flow.New("indexing").Channel(data)
 
+	start.Printlnf("%s - %s - %d - %s")
+
 	keywords := start.Select("divert_keywords", flow.Field(1,4))
-	keywords.Printlnf("%s - %s")
+	// keywords.Printlnf("%s - %s")
 	// word_doc_one := start.Select(1,4).
 	// 	PartitionByKey("partition", 7).
 	// 	Map("read content", registeredReadConent)
