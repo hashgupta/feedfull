@@ -134,11 +134,11 @@ func main() {
 	start = start.Join("add", keywords, flow.Field(1))
 
 	start.OutputRow(func(row *util.Row) error {
-			fmt.Printf("%s: %f\n",
-				row.K[0],
-				row.V[1].(float32),
+			// fmt.Printf("%s: %f\n",
+			// 	row.K[0],
+			// 	row.V[1].(float32),
 
-			)
+			// )
 			var outputRow []interface{}
 			outputRow = append(outputRow, row.K[0], row.V[0], row.V[1], row.V[2])
 			output <- outputRow
