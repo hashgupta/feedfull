@@ -89,7 +89,7 @@ func main() {
 
 	start := flow.New("indexing").Channel(data)
 
-	start.Printlnf("%s - %s - %d - %s")
+	start = start.Printlnf("%s - %s - %d - %s")
 
 	keywords := start.Select("divert_keywords", flow.Field(1,4))
 	// keywords.Printlnf("%s - %s")
